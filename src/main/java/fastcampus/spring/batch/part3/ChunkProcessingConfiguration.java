@@ -9,6 +9,7 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.core.step.tasklet.TaskletStep;
@@ -78,19 +79,18 @@ public class ChunkProcessingConfiguration {
 
     public Step taskBaseStep() {
         return stepBuilderFactory.get("taskBaseStep")
-                .tasklet(this.tasklet())
+                .tasklet(this.tasklet(null))
                 .build();
     }
 
-    // tasklet로 반복하여 100개 만들기
-    public Tasklet tasklet() {
+    @Bean
+    @StepScope
+    public Tasklet tasklet(@Value("#{jobParameters[chunkSize]}") String value) {
         List<String> items = getItems();
         return ((contribution, chunkContext) -> {
             StepExecution stepExecution = contribution.getStepExecution();
-            JobParameters jobParameters = stepExecution.getJobParameters();
-
-            // 파라미터 수정
-            String value = jobParameters.getString("chunkSize", "10");
+//            JobParameters jobParameters = stepExecution.getJobParameters();
+//            String value = jobParameters.getString("chunkSize", "10");
             int chunkSize = StringUtils.isNotEmpty(value) ? Integer.parseInt(value) : 10;
 
 

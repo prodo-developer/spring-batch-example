@@ -7,8 +7,13 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
+import org.springframework.batch.item.file.mapping.DefaultLineMapper;
+import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,10 +32,11 @@ public class ItemReaderConfiguration {
     }
 
     @Bean
-    public Job itemReaderJob() {
+    public Job itemReaderJob() throws Exception {
         return this.jobBuilderFactory.get("itemReaderJob")
                 .incrementer(new RunIdIncrementer())
                 .start(this.customItemReaderStep())
+                .next(this.csvFileStep())
                 .build();
     }
 
@@ -42,11 +48,49 @@ public class ItemReaderConfiguration {
                 .writer(itemWriter())
                 .build();
     }
+    
+    @Bean
+    public Step csvFileStep() throws Exception {
+        return stepBuilderFactory.get("csbFileStep")
+                .<Person, Person>chunk(10)
+                .reader(this.csvFileItemReader())
+                .writer(itemWriter())
+                .build();
+    }
+
+    /* csv 파일 생성과, Person 매핑 */
+    private FlatFileItemReader<Person> csvFileItemReader() throws Exception {
+        DefaultLineMapper<Person> lineMapper = new DefaultLineMapper<>();
+        DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
+        tokenizer.setNames("id", "name", "age", "address");
+        lineMapper.setLineTokenizer(tokenizer);
+
+        lineMapper.setFieldSetMapper(fieldSet -> {
+            int id = fieldSet.readInt("id");
+            String name = fieldSet.readString("name");
+            String age = fieldSet.readString("age");
+            String address = fieldSet.readString("address");
+
+            return new Person(id, name, age, address);
+        });
+
+        FlatFileItemReader<Person> itemReader = new FlatFileItemReaderBuilder<Person>()
+                .name("csvFileItemReader")
+                .encoding("UTF-8")
+                .resource(new ClassPathResource("test.csv"))
+                .linesToSkip(1) // 데이터가아닌 필드명부터 (1번행 패스)
+                .lineMapper(lineMapper)
+                .build();
+
+        itemReader.afterPropertiesSet(); // itemReader 필수값들이 정상적으로 됐는지 검증
+
+        return itemReader;
+    }
 
     private ItemWriter<? super Person> itemWriter() {
         return items -> log.info(items.stream()
                 .map(Person::getName)
-                .collect(Collectors.joining()));
+                .collect(Collectors.joining(", ")));
     }
 
     private List<Person> getItems() {

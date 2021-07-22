@@ -12,8 +12,8 @@
 - [X] 04.데이터공유ExecutionContext이해
 ## Ch03.스프링배치기초이해하기
 - [X] 01.Task기반배치와Chunk기반배치
-- [ ] 02.JobParameters이해
-- [ ] 03.@JobScope와@StepScope이해
+- [X] 02.JobParameters이해
+- [X] 03.@JobScope와@StepScope이해
 - [ ] 04.ItemReaderinterface구조
 - [ ] 05.CSV파일데이터읽기
 - [ ] 06.JDBC데이터읽기

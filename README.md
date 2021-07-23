@@ -14,9 +14,9 @@
 - [X] 01.Task기반배치와Chunk기반배치
 - [X] 02.JobParameters이해
 - [X] 03.@JobScope와@StepScope이해
-- [ ] 04.ItemReaderinterface구조
-- [ ] 05.CSV파일데이터읽기
-- [ ] 06.JDBC데이터읽기
+- [X] 04.ItemReaderinterface구조
+- [X] 05.CSV파일데이터읽기
+- [X] 06.JDBC데이터읽기
 - [ ] 07.JPA데이터읽기
 - [ ] 08.ItemWriterinterface구조이해
 - [ ] 09.CSV파일데이터쓰기

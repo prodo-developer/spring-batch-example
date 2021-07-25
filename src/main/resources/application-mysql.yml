@@ -1,13 +1,16 @@
+# 2.4.2 버전에서 2.5.2로 개편 후 hikari 삭제
 spring:
   datasource:
-    hikari:
-      jdbc-url: jdbc:mysql://127.0.0.1:3306/spring_batch?characterEncoding=UTF-8&serverTimezone=UTC
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      username: root
-      password: root
-    jpa:
+    url: jdbc:mysql://localhost:3306/spring_batch?characterEncoding=UTF-8&serverTimezone=UTC&rewriteBatchedStatments=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
       hibernate:
-        ddl-auto: create
-      show-sql: true
+        show_sql: true
+#        format_sql: true
 batch:
   initialize-schema: never

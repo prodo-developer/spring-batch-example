@@ -17,11 +17,11 @@
 - [X] 04.ItemReaderinterface구조
 - [X] 05.CSV파일데이터읽기
 - [X] 06.JDBC데이터읽기
-- [ ] 07.JPA데이터읽기
-- [ ] 08.ItemWriterinterface구조이해
-- [ ] 09.CSV파일데이터쓰기
-- [ ] 10.JDBC데이터쓰기
-- [ ] 11.JPA데이터쓰기
+- [X] 07.JPA데이터읽기
+- [X] 08.ItemWriterinterface구조이해
+- [X] 09.CSV파일데이터쓰기
+- [X] 10.JDBC데이터쓰기
+- [X] 11.JPA데이터쓰기
 - [ ] 12.ItemProcessorinterface구조이해,과제요구사항설명
 - [ ] 13.[과제]CSV파일데이터읽고MySQLDB에insert하기
 - [ ] 14.테스트코드작성하기

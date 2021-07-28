@@ -25,9 +25,9 @@
 - [X] 12.ItemProcessorinterface구조이해,과제요구사항설명
 - [X] 13.[과제]CSV파일데이터읽고MySQLDB에insert하기
 - [X] 14.테스트코드작성하기
-- [ ] 15.JobExecutionListener,StepExecutionListener이해
-- [ ] 16.StepListener이해
-- [ ] 17.skip예외처리
+- [X] 15.JobExecutionListener,StepExecutionListener이해
+- [X] 16.StepListener이해
+- [X] 17.skip예외처리
 - [ ] 18.retry예외처리
 
 ## Ch04.회원등급프로젝트

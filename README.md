@@ -28,7 +28,7 @@
 - [X] 15.JobExecutionListener,StepExecutionListener이해
 - [X] 16.StepListener이해
 - [X] 17.skip예외처리
-- [ ] 18.retry예외처리
+- [X] 18.retry예외처리
 
 ## Ch04.회원등급프로젝트
 - [ ] 01.요구사항이해하기

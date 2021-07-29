@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @NoArgsConstructor
@@ -25,5 +26,9 @@ public class Person {
         this.name = name;
         this.age = age;
         this.address = address;
+    }
+
+    public boolean isNotEmptyName() {
+        return Objects.nonNull(this.name) && !name.isEmpty();
     }
 }

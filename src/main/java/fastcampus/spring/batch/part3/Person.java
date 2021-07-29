@@ -31,4 +31,9 @@ public class Person {
     public boolean isNotEmptyName() {
         return Objects.nonNull(this.name) && !name.isEmpty();
     }
+
+    public Person unknownName() {
+        this.name = "UNKNOWN";
+        return this;
+    }
 }

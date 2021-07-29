@@ -64,8 +64,8 @@ public class SavePersonConfiguration {
                 .writer(itemWriter())
                 .listener(new SavePersonListener.SavePersonStepExecutionListener())
                 .faultTolerant()// 아래 예외처리를 하기위한 설정
-                .skip(NotFoundException.class)
-                .skipLimit(3)
+                .skip(NotFoundNameException.class)
+                .skipLimit(2)
                 .build();
     }
 
@@ -82,7 +82,7 @@ public class SavePersonConfiguration {
         };
 
         CompositeItemProcessor<Person, Person> itemProcessor = new CompositeItemProcessorBuilder<Person, Person>()
-                .delegates(validationProcessor, duplicateValidationProcessor)
+                .delegates(new PersonValidRetryProcessor(),validationProcessor, duplicateValidationProcessor)
                 .build();
 
         itemProcessor.afterPropertiesSet();

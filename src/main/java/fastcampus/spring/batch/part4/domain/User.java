@@ -29,4 +29,16 @@ public class User {
         this.username = username;
         this.totalAmount = totalAmount;
     }
+
+    public boolean availabelLevelUp() {
+        return Level.availabelLevelUp(this.getLevel(), this.getTotalAmount());
+    }
+
+    public Level levelUp() {
+        Level nextLevel = Level.getNextLevel(this.getTotalAmount());
+        this.level = nextLevel;
+        this.updateDate = LocalDateTime.now();
+
+        return nextLevel;
+    }
 }

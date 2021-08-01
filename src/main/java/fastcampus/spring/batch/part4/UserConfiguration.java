@@ -35,16 +35,18 @@ public class UserConfiguration {
     }
 
     @Bean
-    public Job userJob() {
-        return this.jobBuilderFactory.get("itemReaderJob")
+    public Job userJob() throws Exception {
+        return this.jobBuilderFactory.get("userJob")
                 .incrementer(new RunIdIncrementer())
                 .start(this.saveUserStep())
+                .next(this.userLevelUpStep())
+                .listener(new LevelUpJobExecutionListener(userRepository))
                 .build();
     }
 
     @Bean
     public Step saveUserStep() {
-        return this.stepBuilderFactory.get("customItemReaderStep")
+        return this.stepBuilderFactory.get("saveUserStep")
                 .tasklet(new SaveUserTasklet(userRepository))
                 .build();
     }
@@ -68,7 +70,7 @@ public class UserConfiguration {
 
     private ItemProcessor<? super User, ? extends User> itemProcessor() {
         return user -> {
-            if (user.availabelLevelUp()) {
+            if (user.availableLeveUp()) {
                 return user;
             }
 

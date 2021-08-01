@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -22,7 +23,7 @@ public class User {
 
     private int totalAmount;
 
-    private LocalDateTime updateDate;
+    private LocalDate updatedDate;
 
     @Builder
     private User(String username, int totalAmount) {
@@ -30,14 +31,14 @@ public class User {
         this.totalAmount = totalAmount;
     }
 
-    public boolean availabelLevelUp() {
-        return Level.availabelLevelUp(this.getLevel(), this.getTotalAmount());
+    public boolean availableLeveUp() {
+        return Level.availableLevelUp(this.getLevel(), this.getTotalAmount());
     }
 
     public Level levelUp() {
         Level nextLevel = Level.getNextLevel(this.getTotalAmount());
         this.level = nextLevel;
-        this.updateDate = LocalDateTime.now();
+        this.updatedDate = LocalDate.now();
 
         return nextLevel;
     }

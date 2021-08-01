@@ -16,7 +16,7 @@ public enum Level {
         this.nextLevel = nextLevel;
     }
 
-    public static boolean availabelLevelUp(Level level, int totalAmount) {
+    public static boolean availableLevelUp(Level level, int totalAmount) {
         if(Objects.isNull(level)) {
             return false;
         }

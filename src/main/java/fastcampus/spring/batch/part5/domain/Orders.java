@@ -22,12 +22,12 @@ public class Orders {
 
     private int amount;
 
-    private LocalDate createDate;
+    private LocalDate createdDate;
 
     @Builder
-    public Orders(String itemName, int amount, LocalDate createDate) {
+    public Orders(String itemName, int amount, LocalDate createdDate) {
         this.itemName = itemName;
         this.amount = amount;
-        this.createDate = createDate;
+        this.createdDate = createdDate;
     }
 }

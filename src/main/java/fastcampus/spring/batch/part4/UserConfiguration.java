@@ -2,6 +2,7 @@ package fastcampus.spring.batch.part4;
 
 import fastcampus.spring.batch.part4.domain.User;
 import fastcampus.spring.batch.part4.repository.UserRepository;
+import fastcampus.spring.batch.part5.JobParameterDecide;
 import fastcampus.spring.batch.part5.OrderStatistics;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -60,8 +61,11 @@ public class UserConfiguration {
                 .incrementer(new RunIdIncrementer())
                 .start(this.saveUserStep())
                 .next(this.userLevelUpStep())
-                .next(this.orderStatisticsStep(null))
                 .listener(new LevelUpJobExecutionListener(userRepository))
+                .next(new JobParameterDecide("date")) // 가져온값이 아래의 CONTINUE인지 체크
+                .on(JobParameterDecide.CONTINUE.getName()) // CONTINUE이면 아래의 to메서드 실행
+                .to(this.orderStatisticsStep(null))
+                .build()
                 .build();
     }
 

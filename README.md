@@ -36,10 +36,10 @@
 - [X] 03.회원주문금액에따른등급적용Step개발
 - [X] 04.JobExecutionListener로대상회원데이터로그와실행시간측정
 ## Ch05.주문금액집계프로젝트
-- [ ] 01.요구사항이해
-- [ ] 02.User와OrdersEntity의매핑관계개발
-- [ ] 03.일별주문금액집계Step개발
-- [ ] 04.JobExecutionDecider로주문금액집계Step실행여부결정
+- [X] 01.요구사항이해
+- [X] 02.User와OrdersEntity의매핑관계개발
+- [X] 03.일별주문금액집계Step개발
+- [X] 04.JobExecutionDecider로주문금액집계Step실행여부결정
 ## Ch06.성능개선과성능비교
 - [ ] 01.성능개선계획이해
 - [ ] 02.AsyncStep적용하기

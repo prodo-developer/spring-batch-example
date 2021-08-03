@@ -40,7 +40,8 @@ import java.util.Map;
 @Slf4j
 public class UserConfiguration {
 
-    public static final int CHUNK_SIZE = 100;
+    private final String JOB_NAME = "userJob";
+    public static final int CHUNK_SIZE = 1000;
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
     private final UserRepository userRepository;
@@ -55,9 +56,9 @@ public class UserConfiguration {
         this.dataSource = dataSource;
     }
 
-    @Bean
+    @Bean(JOB_NAME)
     public Job userJob() throws Exception {
-        return this.jobBuilderFactory.get("userJob")
+        return this.jobBuilderFactory.get(JOB_NAME)
                 .incrementer(new RunIdIncrementer())
                 .start(this.saveUserStep())
                 .next(this.userLevelUpStep())
@@ -69,10 +70,10 @@ public class UserConfiguration {
                 .build();
     }
 
-    @Bean
+    @Bean(JOB_NAME + "_orderStatisticsStep")
     @JobScope
     public Step orderStatisticsStep(@Value("#{jobParameters[date]}") String date) throws Exception {
-        return this.stepBuilderFactory.get("orderStatisticsStep")
+        return this.stepBuilderFactory.get(JOB_NAME + "_orderStatisticsStep")
                 .<OrderStatistics, OrderStatistics>chunk(CHUNK_SIZE)
                 .reader(orderStatisticsItemReader(date))
                 .writer(orderStatisticsItemWriter(date))
@@ -96,7 +97,7 @@ public class UserConfiguration {
                         .date(LocalDate.parse(resultSet.getString(2), DateTimeFormatter.ISO_DATE))
                         .build())
                 .pageSize(CHUNK_SIZE) // 페이징 설정
-                .name("orderStatisticsItemReader")
+                .name(JOB_NAME + "_orderStatisticsItemReader")
                 .selectClause("sum(amount), created_date")
                 .fromClause("orders")
                 .whereClause("created_date >= :startDate and created_date <= :endDate")
@@ -125,7 +126,7 @@ public class UserConfiguration {
         FlatFileItemWriter<OrderStatistics> itemWriter = new FlatFileItemWriterBuilder<OrderStatistics>()
                 .resource(new FileSystemResource("output/" + fileName))
                 .lineAggregator(lineAggregator)
-                .name("orderStatisticsItemWriter")
+                .name(JOB_NAME + "_orderStatisticsItemWriter")
                 .encoding("UTF-8")
                 .headerCallback(writer -> writer.write("total_amount,date"))
                 .build();
@@ -135,16 +136,16 @@ public class UserConfiguration {
         return itemWriter;
     }
 
-    @Bean
+    @Bean(JOB_NAME + "_saveUserStep")
     public Step saveUserStep() {
-        return this.stepBuilderFactory.get("saveUserStep")
+        return this.stepBuilderFactory.get(JOB_NAME + "_saveUserStep")
                 .tasklet(new SaveUserTasklet(userRepository))
                 .build();
     }
 
-    @Bean
+    @Bean(JOB_NAME + "_userLevelUpStep")
     public Step userLevelUpStep() throws Exception {
-        return this.stepBuilderFactory.get("userLevelUpStep")
+        return this.stepBuilderFactory.get(JOB_NAME + "_userLevelUpStep")
                 .<User, User>chunk(CHUNK_SIZE)
                 .reader(itemReader())
                 .processor(itemProcessor())
@@ -174,7 +175,7 @@ public class UserConfiguration {
                 .queryString("select u from User u")
                 .entityManagerFactory(entityManagerFactory)
                 .pageSize(CHUNK_SIZE)
-                .name("userItemReader")
+                .name(JOB_NAME + "_userItemReader")
                 .build();
 
         itemReader.afterPropertiesSet();

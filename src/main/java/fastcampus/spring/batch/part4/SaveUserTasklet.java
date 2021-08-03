@@ -16,7 +16,7 @@ import java.util.List;
 public class SaveUserTasklet implements Tasklet {
 
     private final int ZERO = 0;
-    private final int SIZE = 100;
+    private final int SIZE = 10_000;
     private final UserRepository userRepository;
 
     public SaveUserTasklet(UserRepository userRepository) {

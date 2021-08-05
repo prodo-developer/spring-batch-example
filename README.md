@@ -41,10 +41,10 @@
 - [X] 03.일별주문금액집계Step개발
 - [X] 04.JobExecutionDecider로주문금액집계Step실행여부결정
 ## Ch06.성능개선과성능비교
-- [ ] 01.성능개선계획이해
-- [ ] 02.AsyncStep적용하기
-- [ ] 03.Multi-ThreadStep적용하기
-- [ ] 04.PartitionStep적용하기
+- [X] 01.성능개선계획이해
+- [X] 02.AsyncStep적용하기
+- [X] 03.Multi-ThreadStep적용하기
+- [X] 04.PartitionStep적용하기
 - [ ] 05.ParallelStep적용하기
 ## Ch07.스프링배치설정과실행
 - [ ] 01.jar생성과실행

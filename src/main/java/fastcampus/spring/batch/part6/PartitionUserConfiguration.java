@@ -16,6 +16,8 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.partition.PartitionHandler;
 import org.springframework.batch.core.partition.support.TaskExecutorPartitionHandler;
+import org.springframework.batch.integration.async.AsyncItemProcessor;
+import org.springframework.batch.integration.async.AsyncItemWriter;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -41,6 +43,7 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 @Configuration
 @Slf4j
@@ -154,7 +157,7 @@ public class PartitionUserConfiguration {
     @Bean(JOB_NAME + "_userLevelUpStep")
     public Step userLevelUpStep() throws Exception {
         return this.stepBuilderFactory.get(JOB_NAME + "_userLevelUpStep")
-                .<User, User>chunk(CHUNK_SIZE)
+                .<User, Future<User>>chunk(CHUNK_SIZE)
                 .reader(itemReader(null, null))
                 .processor(itemProcessor())
                 .writer(itemWriter())
@@ -180,21 +183,32 @@ public class PartitionUserConfiguration {
         return handler;
     }
 
-    private ItemWriter<? super User> itemWriter() {
-        return users -> users.forEach(x -> {
-                x.levelUp();
-                userRepository.save(x);
+    private AsyncItemWriter<User> itemWriter() {
+        ItemWriter<User> itemWriter = users -> users.forEach(x -> {
+            x.levelUp();
+            userRepository.save(x);
         });
+
+        AsyncItemWriter<User> asyncItemWriter = new AsyncItemWriter<>();
+        asyncItemWriter.setDelegate(itemWriter);
+
+        return asyncItemWriter;
     }
 
-    private ItemProcessor<? super User, ? extends User> itemProcessor() {
-        return user -> {
+    private AsyncItemProcessor<User, User> itemProcessor() {
+        ItemProcessor<User, User> itemProcessor = user -> {
             if (user.availableLeveUp()) {
                 return user;
             }
 
             return null;
         };
+
+        AsyncItemProcessor<User, User> asyncItemProcessor = new AsyncItemProcessor<>();
+        asyncItemProcessor.setDelegate(itemProcessor);
+        asyncItemProcessor.setTaskExecutor(this.taskExecutor);
+
+        return asyncItemProcessor;
     }
 
     @Bean

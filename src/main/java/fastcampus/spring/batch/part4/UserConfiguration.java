@@ -65,18 +65,19 @@ public class UserConfiguration {
                 .listener(new LevelUpJobExecutionListener(userRepository))
                 .next(new JobParameterDecide("date")) // 가져온값이 아래의 CONTINUE인지 체크
                 .on(JobParameterDecide.CONTINUE.getName()) // CONTINUE이면 아래의 to메서드 실행
-                .to(this.orderStatisticsStep(null))
+                .to(this.orderStatisticsStep(null, null))
                 .build()
                 .build();
     }
 
     @Bean(JOB_NAME + "_orderStatisticsStep")
     @JobScope
-    public Step orderStatisticsStep(@Value("#{jobParameters[date]}") String date) throws Exception {
+    public Step orderStatisticsStep(@Value("#{jobParameters[date]}") String date,
+                                    @Value("#{jobParameters[path]}") String path) throws Exception {
         return this.stepBuilderFactory.get(JOB_NAME + "_orderStatisticsStep")
                 .<OrderStatistics, OrderStatistics>chunk(CHUNK_SIZE)
                 .reader(orderStatisticsItemReader(date))
-                .writer(orderStatisticsItemWriter(date))
+                .writer(orderStatisticsItemWriter(date, path))
                 .build();
     }
 
@@ -111,7 +112,7 @@ public class UserConfiguration {
         return itemReader;
     }
 
-    private ItemWriter<? super OrderStatistics> orderStatisticsItemWriter(String date) throws Exception {
+    private ItemWriter<? super OrderStatistics> orderStatisticsItemWriter(String date, String path) throws Exception {
         YearMonth yearMonth = YearMonth.parse(date);
 
         String fileName = yearMonth.getYear() + "년_" + yearMonth.getMonthValue() + "월_일별_주문_금액.csv";
@@ -124,7 +125,7 @@ public class UserConfiguration {
         lineAggregator.setFieldExtractor(fieldExtractor);
 
         FlatFileItemWriter<OrderStatistics> itemWriter = new FlatFileItemWriterBuilder<OrderStatistics>()
-                .resource(new FileSystemResource("output/" + fileName))
+                .resource(new FileSystemResource(path + fileName))
                 .lineAggregator(lineAggregator)
                 .name(JOB_NAME + "_orderStatisticsItemWriter")
                 .encoding("UTF-8")

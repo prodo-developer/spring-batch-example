@@ -55,7 +55,7 @@
 - [X] 03.Multi-ThreadStep적용하기
 - [X] 04.PartitionStep적용하기
 - [X] 05.ParallelStep적용하기
-- 
+
 ## Ch07.스프링배치설정과실행
 - [X] 01.jar생성과실행
 - [ ] 02.jenkinsscheduler를이용한스프링배치실행

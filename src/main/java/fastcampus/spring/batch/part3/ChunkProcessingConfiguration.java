@@ -27,7 +27,7 @@ import java.util.List;
 
 /**
  * public <I, O> SimpleStepBuilder<I, O> chunk(int chunkSize) {
- * 		return new SimpleStepBuilder<I, O>(this).chunk(chunkSize);
+ * return new SimpleStepBuilder<I, O>(this).chunk(chunkSize);
  * }
  */
 
@@ -97,7 +97,7 @@ public class ChunkProcessingConfiguration {
             int fromIndex = stepExecution.getReadCount();
             int toIndex = fromIndex + chunkSize;
 
-            if(fromIndex >= items.size()) {
+            if (fromIndex >= items.size()) {
                 return RepeatStatus.FINISHED;
             }
 
@@ -120,7 +120,7 @@ public class ChunkProcessingConfiguration {
 //            return RepeatStatus.FINISHED;
 //        });
 //    }
-    
+
     public List<String> getItems() {
         List<String> items = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
